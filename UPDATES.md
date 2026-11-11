@@ -5,6 +5,7 @@ Entries are listed in reverse chronological order; add new updates at the top.
 ## CI foundation — 2026-11-11
 
 - Added Ubuntu GitHub Actions checks for core tests, Python syntax, and Linux shell syntax.
+- Renamed the GTK preview script to `tests/ui_test.py` so unittest discovery does not import GTK in headless CI.
 - Recorded that CD/release automation is deferred and Windows 11 CI will be added when that platform is developed.
 
 ## 1.0.5 — 2026-11-11
