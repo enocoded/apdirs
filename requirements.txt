@@ -1,0 +1,3 @@
+# Core python logic relies on standard library (os, shutil, datetime).
+# GUI interface requires tkinter (install python3-tk via apt).
+# Linux Nautilus extension requires python3-nautilus.

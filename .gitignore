@@ -2,4 +2,7 @@ __pycache__/
 *.pyc
 .vscode/
 .idea/
+*.egg-info/
+build/
+dist/
 assets/templates/*.docx

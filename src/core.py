@@ -18,7 +18,7 @@ class ApdirsCore:
         project_folder = f"{current_date}_{client_name}_{project_slug}"
         full_path = os.path.join(self.base_dir, project_folder)
 
-        # Create directory tree
+        # Create structured directories
         os.makedirs(os.path.join(full_path, f"01-inputs/{current_date}/drawings"), exist_ok=True)
         os.makedirs(os.path.join(full_path, f"01-inputs/{current_date}/refs"), exist_ok=True)
         os.makedirs(os.path.join(full_path, f"01-inputs/{current_date}/insps"), exist_ok=True)
@@ -28,7 +28,7 @@ class ApdirsCore:
 
         os.makedirs(os.path.join(full_path, "03-deliverables"), exist_ok=True)
 
-        # Copy template if available
+        # Copy brief template if available
         brief_src = os.path.join(self.template_dir, "brief-template.docx")
         if os.path.exists(brief_src):
             brief_dst = os.path.join(full_path, f"01-inputs/{current_date}/{current_date}_{project_slug}_brief.docx")
@@ -39,6 +39,7 @@ class ApdirsCore:
     def get_ongoing_projects(self):
         if not os.path.exists(self.base_dir):
             return []
+        # Uses [ -d ] equivalent via os.path.isdir to safely resolve symlinked projects
         return sorted([
             d for d in os.listdir(self.base_dir)
             if os.path.isdir(os.path.join(self.base_dir, d)) and not d.startswith(".")
@@ -61,5 +62,10 @@ class ApdirsCore:
         if target_type == "1":
             for sub in ["drawings", "refs", "insps"]:
                 os.makedirs(os.path.join(final_target, sub), exist_ok=True)
+
+            brief_src = os.path.join(self.template_dir, "brief-template.docx")
+            if os.path.exists(brief_src):
+                brief_dst = os.path.join(final_target, f"{folder_name}_brief.docx")
+                shutil.copy(brief_src, brief_dst)
 
         return final_target
