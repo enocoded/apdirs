@@ -1,8 +1,12 @@
+from pathlib import Path
+
 from setuptools import setup, find_packages
+
+VERSION = Path(__file__).with_name("VERSION").read_text(encoding="utf-8").strip()
 
 setup(
     name="apdirs",
-    version="1.0.0",
+    version=VERSION,
     packages=find_packages(),
     install_requires=[],
     author="enoforte",

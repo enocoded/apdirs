@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ubuntu:
+    name: Ubuntu / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.14"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run core tests
+        run: python -m unittest discover --start-directory tests --pattern 'test_*.py'
+
+      - name: Check Python syntax
+        run: python -m compileall -q src tests platforms/linux-nautilus
+
+      - name: Check shell syntax
+        run: bash -n platforms/linux-nautilus/apdirs_cli.sh platforms/linux-nautilus/install.sh

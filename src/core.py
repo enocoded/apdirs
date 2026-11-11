@@ -5,7 +5,7 @@ from datetime import datetime
 class ApdirsCore:
     def __init__(self, base_dir=None, template_dir=None):
         self.base_dir = base_dir or os.path.expanduser("~/Projects/client-work")
-        self.template_dir = template_dir or os.path.expanduser("~/Projects/templates")
+        self.template_dir = template_dir or os.path.join(self.base_dir, "templates")
 
     def create_project(self, client_input, project_input):
         client_name = client_input.strip().lower().replace(" ", "-")
@@ -39,11 +39,23 @@ class ApdirsCore:
     def get_ongoing_projects(self):
         if not os.path.exists(self.base_dir):
             return []
-        # Uses [ -d ] equivalent via os.path.isdir to safely resolve symlinked projects
-        return sorted([
-            d for d in os.listdir(self.base_dir)
-            if os.path.isdir(os.path.join(self.base_dir, d)) and not d.startswith(".")
-        ])
+
+        projects = []
+        for directory in os.listdir(self.base_dir):
+            if directory.startswith(".") or not os.path.isdir(os.path.join(self.base_dir, directory)):
+                continue
+
+            try:
+                date, client, project = directory.split("_", 2)
+                if datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%m-%d") != date:
+                    continue
+            except ValueError:
+                continue
+
+            if client and project:
+                projects.append(directory)
+
+        return sorted(projects)
 
     def add_dated_folder(self, project_name, target_type, label_input=""):
         selected_project_path = os.path.join(self.base_dir, project_name)
